@@ -1,17 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using NSRcommon;
-using SoapCore;
+using System; 
+using System.Collections.Generic; 
+using System.Linq; 
+using System.ServiceModel; 
+using System.Threading.Tasks; 
+using Microsoft.AspNetCore.Builder; 
+using Microsoft.AspNetCore.Hosting; 
+using Microsoft.AspNetCore.Http; 
+using Microsoft.AspNetCore.HttpsPolicy; 
+using Microsoft.AspNetCore.Mvc; 
+using Microsoft.Extensions.Configuration; 
+using Microsoft.Extensions.DependencyInjection; 
+using NSRcommon; 
+using SoapCore; 
 
 namespace NeuronServerRemoteControl
 {
@@ -19,10 +19,10 @@ namespace NeuronServerRemoteControl
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration; 
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get;  }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -30,13 +30,13 @@ namespace NeuronServerRemoteControl
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+                options.CheckConsentNeeded = context => true; 
+                options.MinimumSameSitePolicy = SameSiteMode.None; 
+            }); 
 
-            services.AddSingleton(typeof(INSRCservice), new NSRCservice());
+            services.AddSingleton(typeof(INSRCservice), new NSRCservice()); 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,26 +44,26 @@ namespace NeuronServerRemoteControl
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage(); 
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseExceptionHandler("/Error"); 
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts(); 
             }
 
-            //app.UseHttpsRedirection();
-            //app.UseStaticFiles();
-            //app.UseCookiePolicy();
+            //app.UseHttpsRedirection(); 
+            //app.UseStaticFiles(); 
+            //app.UseCookiePolicy(); 
 
-            BasicHttpBinding bind = new BasicHttpBinding();
-            bind.Security.Mode = BasicHttpSecurityMode.None;
-            app.UseSoapEndpoint<INSRCservice>(path: "/nsrc_service", binding: bind);
+            BasicHttpBinding bind = new BasicHttpBinding(); 
+            bind.Security.Mode = BasicHttpSecurityMode.None; 
+            app.UseSoapEndpoint<INSRCservice>(path: "/nsrc_service", binding: bind); 
 
 
 
-            app.UseMvc();
+            app.UseMvc(); 
         }
     }
 }
