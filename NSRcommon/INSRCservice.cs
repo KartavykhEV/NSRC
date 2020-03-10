@@ -2,7 +2,16 @@
 
 namespace NSRcommon
 {
-    public class Class1
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface INSRCservice
     {
+
+        NSRCcommand Connect(String name);
+
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NSRcommon;
+using SoapCore;
 
 namespace NeuronServerRemoteControl
 {
@@ -31,6 +34,7 @@ namespace NeuronServerRemoteControl
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddSingleton(typeof(INSRCservice), new NSRCservice());
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -49,9 +53,15 @@ namespace NeuronServerRemoteControl
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseHttpsRedirection();
+            //app.UseStaticFiles();
+            //app.UseCookiePolicy();
+
+            BasicHttpBinding bind = new BasicHttpBinding();
+            bind.Security.Mode = BasicHttpSecurityMode.None;
+            app.UseSoapEndpoint<INSRCservice>(path: "/nsrc_service", binding: bind);
+
+
 
             app.UseMvc();
         }
