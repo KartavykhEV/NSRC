@@ -59,9 +59,7 @@ namespace NeuronServerRemoteControl
 
             BasicHttpBinding bind = new BasicHttpBinding(); 
             bind.Security.Mode = BasicHttpSecurityMode.None; 
-            app.UseSoapEndpoint<INSRCservice>(path: "/nsrc_service", binding: bind); 
-
-
+            app.UseSoapEndpoint<INSRCservice>(path: "/nsrc_service.asmx", bind, SoapSerializer.XmlSerializer); 
 
             app.UseMvc(); 
         }
