@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System; 
 
 namespace NSRcommon
 {
@@ -11,7 +11,7 @@ namespace NSRcommon
     public interface INSRCservice
     {
 
-        NSRCcommand Connect(String name);
+        NSRCcommand Connect(String name); 
 
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
-using Microsoft.Extensions.Configuration;
+﻿using System; 
+using System.IO; 
+using Microsoft.Extensions.Configuration; 
 
 namespace NSRservice
 {
@@ -10,13 +10,13 @@ namespace NSRservice
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true); 
 
-            IConfigurationRoot configuration = builder.Build();
-            var i = configuration.GetSection("NSRsettings").GetChildren();
-            Console.WriteLine(i);
+            IConfigurationRoot configuration = builder.Build(); 
+            String serverName = configuration["Name"]; 
+            Console.WriteLine(serverName); 
 
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Hello World!"); 
         }
     }
 }
