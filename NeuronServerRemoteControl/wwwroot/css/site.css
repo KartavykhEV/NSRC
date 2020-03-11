@@ -54,3 +54,78 @@ body {
   height: 60px; 
   line-height: 60px;  /* Vertically center the text there */
 }
+
+
+/*Loader*/
+.LoadPanel,
+.LoadPanelInside {
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    transform: translate(0px, 0px);
+    transition: all 0.4s;
+}
+
+.LoadPanel {
+    z-index: 1501;
+    position: fixed;
+    background-color: rgba(80, 77, 77, 0.36);
+}
+
+.LoadPanelInside {
+    z-index: 101;
+    position: absolute;
+    background-color: rgba(228, 228, 228, 0.36);
+}
+
+    .LoadPanel.hideLP,
+    .LoadPanelInside.hideLP {
+        opacity: 0;
+        visibility: hidden;
+    }
+    /*.LoadPanelInside.hideLP {
+        transition: all 0.4s;
+    }*/
+    .LoadPanel.showLP,
+    .LoadPanelInside.showLP {
+        opacity: 1;
+        visibility: visible;
+    }
+/*.LoadPanelInside.showLP {
+        transition: all 2s;
+    }*/
+
+.overlay {
+    background: #e9e9e9;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+    z-index: 600;
+}
+
+.spinner {
+    position: absolute;
+    right: calc(50% - 30px);
+    top: 50%;
+    z-index: 601;
+    border: 10px solid rgba(0, 0, 0, 0.3);
+    border-left-color: #43d875;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

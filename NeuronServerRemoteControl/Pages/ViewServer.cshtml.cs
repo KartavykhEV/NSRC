@@ -17,16 +17,6 @@ namespace NeuronServerRemoteControl.Pages
         private NSRCserver server => NSRCservice.servers.FirstOrDefault(i => i.name.Equals(ServerName, StringComparison.InvariantCultureIgnoreCase));
 
         /// <summary>
-        /// Кол-во отправленных команд
-        /// </summary>
-        public int SentCommandsCount => server.SentCommands.Count;
-
-        /// <summary>
-        /// Отправленные команды
-        /// </summary>
-        public IEnumerable<NSRCcommand> SentCommands => server.SentCommands.OrderByDescending(i => i.CreateDate);
-
-        /// <summary>
         /// Имя сервера
         /// </summary>
         public String ServerName { get; set; }
@@ -38,6 +28,7 @@ namespace NeuronServerRemoteControl.Pages
             if (server == null)
                 return NotFound();
 
+            ViewData["ServerName"] = ServerName;
             return Page();
         }
 
@@ -46,7 +37,29 @@ namespace NeuronServerRemoteControl.Pages
             ServerName = Request.Form["ServerName"];
             NSRCcommand command = new NSRCcommand() { CommandText = Request.Form["CommandText"] };
             server.AddCommand(command);
+            ViewData["ServerName"] = ServerName;
         }
+
+     /*   public PartialViewResult GetListCommand()
+        {
+            if(this.SentCommandsCount > 0)
+            {
+            foreach (var item in this.SentCommands)
+            {
+                <p>@($"{item.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")} {item.CommandText}")</p>
+                <p>@item.ResponseText</p>
+            }
+
+            Cars = _carService.GetAll();
+            return Partial("_CarPartial", Cars);
+
+           /*return new PartialViewResult
+            {
+                ViewName = "_CarPartial",
+                ViewData = new ViewDataDictionary<List<Car>>(ViewData, Cars)
+            };
+        }*/
+
         //public IActionResult OnGet
     }
 }

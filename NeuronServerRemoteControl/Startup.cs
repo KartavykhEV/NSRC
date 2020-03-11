@@ -59,7 +59,7 @@ namespace NeuronServerRemoteControl
             }
 
             app.UseHttpsRedirection(); 
-            //app.UseStaticFiles(); 
+            app.UseStaticFiles(); 
             //app.UseCookiePolicy(); 
 
             BasicHttpsBinding bind = new BasicHttpsBinding(); 

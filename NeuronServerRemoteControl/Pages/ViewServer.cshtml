@@ -1,36 +1,95 @@
 ﻿@page
 @model NeuronServerRemoteControl.Pages.ViewServerModel
 @{
+    String serverName = ViewData["ServerName"].ToString();
 }
 
-
-<form class="form-horizontal" method="post">
-    @Html.HiddenFor(m => m.ServerName)
-    <div class="form-group">
-        <label for="Name" class="col-sm-2 control-label">Command text</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" name="CommandText">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">Send command</button>
-        </div>
-    </div>
-</form>
-
-
-<p>Предыдущие запросы</p>
-@if (Model.SentCommandsCount > 0)
-{
-    foreach (var item in Model.SentCommands)
-    {
-        <p>@($"{item.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")} {item.CommandText}")</p>
-        <p>@item.ResponseText</p>
+<style>
+    .flexBottom {
+        display: flex;
+        height: 100%;
+        align-items: flex-end;
     }
-}
-else
-{
-    <p>Запросов нет</p>
-}
+    .sendButton {
+        width: 38px;
+        height: 38px;
+        cursor: pointer;
+    }
+        .sendButton:active,
+        .sendButton:focus {
+            zoom: 0.9;
+        }
+</style>
+
+<form class="form-horizontal" method="post" id="formSend">
+    @Html.HiddenFor(m => m.ServerName)
+    <div class="form-row">
+        <div class="form-group col-md-10 col-sm-9 col-8" style=" max-width: calc(100% - 50px);flex-basis: calc(100% - 50px);">
+            <label for="Name" style="font-weight: bold;">Текст команды</label>
+            <input type="text" class="form-control" name="CommandText" id="CommandText">
+        </div>
+        <div class="form-group">
+            <div class="flexBottom">
+                <img src="~/img/send.png" class="sendButton" onclick="sendCommand()" title="Отправить команду" />
+            </div>
+        </div>
+    </div>
+
+</form>
+<div id="commandList"></div>
+
+
+<div class="LoadPanel hideLP">
+    <div class="overlay"></div>
+    <div class="spinner"></div>
+</div>
+
+<script>
+
+    $(document).ready(function ()
+    {
+        reloadCommands();
+        document.onkeypress = stopRKey;
+    });
+
+    function stopRKey(evt)
+    {
+        var evt = (evt) ? evt : ((event) ? event : null);
+        var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+        if ((evt.keyCode == 13) && (node.type == "text")) { sendCommand(); return false; }
+    }
+
+
+    function reloadCommands()
+    {
+        $(".LoadPanel").removeClass("hideLP").addClass("showLP");
+        var jsonData = { "passedObject": '\"@serverName\"' };
+        $.ajax({
+            type: 'GET',
+            url: "/ListCommand?handler=ListCommand",
+            contentType: 'application/json; charset=utf-8"',
+            data: jsonData,
+            success: function (result)
+            {
+                $("#commandList").html(result);
+                $(".LoadPanel").removeClass("showLP").addClass("hideLP");
+            },
+            error: function (error)
+            {
+                console.log(error);
+                $(".LoadPanel").removeClass("showLP").addClass("hideLP");
+            }
+        });
+    }
+
+    function sendCommand(text)
+    {
+        if (text != null)
+            $("#CommandText").val(text);
+        $.post('', $('#formSend').serialize())
+        $("#CommandText").val("");
+
+        setInterval(reloadCommands, 3000);
+    }
+
+</script>

@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/NeuronServerRemoteControl",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:51800",
       "sslPort": 44364
@@ -9,11 +13,12 @@
   },
   "profiles": {
     "IIS Express": {
-      "commandName": "IISExpress",
+      "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:9119"
     },
     "NeuronServerRemoteControl": {
       "commandName": "Project",

@@ -4,23 +4,86 @@
 @{
     ViewData["Title"] = "Home page";
 }
+<style>
+    .bBot {
+        border-bottom: 1px solid #d1d1d2;
+    }
+    .bLeft {
+        border-left: 1px solid #d1d1d2;
+    }
+</style>
 
-<div class="text-center">
-
+<div class="container" id="mainContent">
     @if (Model.connectedServers.Count() == 0)
     {
-        <p>Подключенных серверов нет</p>
+        <h2 class="text-center">Подключенных серверов нет</h2>
     }
     else
     {
-        <ul>
-            @foreach (var i in Model.connectedServers)
+        <h2 class="text-center" style="margin-bottom:30px">Список подключенных серверов</h2>
+        <div>
+            <div class="row">
+                <div class="offset-3 col-md-3 text-center font-weight-bold bBot">ИМЯ СЕРВЕРА</div>
+                <div class="col-md-3 text-center font-weight-bold bBot bLeft">ДАТА ПОДКЛЮЧЕНИЯ</div>
+            </div>
+            <div class="row">
+                @foreach (var i in Model.connectedServers)
+                {
+                    Dictionary<string, string> serverData = new Dictionary<string, string> { { "passedObject", JsonConvert.SerializeObject(i.name) } };
+                    <div class="offset-3 col-md-3 text-center"><a asp-page="./Viewserver" asp-all-route-data="serverData">@i.name</a></div>
+                    <div class="col-md-3 text-center bLeft">@i.lastConnect.ToString("dd.MM.yyyy HH:mm")</div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+
+    $(document).ready(function ()
+    {
+        GetServerList();
+
+        setInterval(GetServerList, 5000);
+    });
+
+    function GetServerList()
+    {
+        $.ajax({
+            type: 'GET',
+            url: "/Index?handler=ListServers",
+            contentType: 'application/json; charset=utf-8"',
+            success: function (result)
             {
-                Dictionary<string, string> serverData =
-                        new Dictionary<string, string> { { "passedObject", JsonConvert.SerializeObject(i.name) } };
-                <li><a asp-page="./Viewserver" asp-all-route-data="serverData">@i.name</a> @i.lastConnect.ToString("dd.MM.yyyy HH:mm") </li>
+                var arrayRes = JSON.parse(result);
+                var content = "<h2 class='text-center'>Подключенных серверов нет</h2>";
+                if (arrayRes.length > 0)
+                {
+                    content = "<h2 class='text-center' style='margin-bottom:30px'>Список подключенных серверов</h2>" +
+                        "<div>" +
+                        "<div class='row'>" +
+                            "<div class='offset-3 col-md-3 text-center font-weight-bold bBot'>ИМЯ СЕРВЕРА</div>" +
+                            "<div class='col-md-3 text-center font-weight-bold bBot bLeft'>ДАТА ПОДКЛЮЧЕНИЯ</div>" +
+                        "</div>" +
+                        "<div class='row'>";
+
+                    let serversContent = "";
+                    for (let i = 0; i < arrayRes.length; i++)
+                    {
+                        let item = arrayRes[i];
+                        serversContent += "<div class='offset-3 col-md-3 text-center'><a href=\'/ViewServer?passedObject=\"" + item.name + "\"\''>" + item.name + "</a></div>" +
+                            "<div class='col-md-3 text-center bLeft'>" + item.lastConnect + "</div>";
+                    }
+
+                    content += serversContent + "</div><div>";
+                }
+                $("#mainContent").html(content);
+            },
+            error: function (error)
+            {
+                console.log(error);
             }
-        </ul>
+        });
     }
 
-</div>
+</script>
