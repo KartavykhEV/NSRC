@@ -9,6 +9,13 @@ namespace NeuronServerRemoteControl.Pages
 {
     public class IndexModel : PageModel
     {
+        /// <summary>
+        /// Подключенные сервера
+        /// </summary>
+        public IEnumerable<NSRCserver> connectedServers => NSRCservice.servers;
+
+
+
         public void OnGet()
         {
 

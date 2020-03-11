@@ -13,7 +13,12 @@ namespace NSRcommon
     public interface INSRCservice
     {
         [OperationContract]
-        NSRCcommand Connect(String name); 
+        NSRCcommand Connect(String name);
+
+        [OperationContract]
+        NSRCcommand SendResponse(String name, NSRCresponse response);
+
+
 
     }
 }

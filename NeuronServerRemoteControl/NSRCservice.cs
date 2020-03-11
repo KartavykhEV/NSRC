@@ -17,10 +17,6 @@ namespace NeuronServerRemoteControl
         public NSRCservice()
         {
 
-            /// <summary>
-            /// Все подключенные сервера
-            /// </summary>
-
 
 
         }
@@ -40,8 +36,16 @@ namespace NeuronServerRemoteControl
             }
 
             server.lastConnect = DateTime.Now; 
-            return server.Commands.Count>0 ? server.Commands.Dequeue() : null; 
+            return server.GetCommand(); 
         }
 
-}
+        public NSRCcommand SendResponse(String name, NSRCresponse response)
+        {
+            NSRCserver server = servers.FirstOrDefault(i => i.name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            server.AddResponse(response);
+            return Connect(name);
+        }
+
+
+    }
 }

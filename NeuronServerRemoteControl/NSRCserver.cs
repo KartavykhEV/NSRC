@@ -1,5 +1,6 @@
 ﻿using System; 
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using System.Linq;
 using NSRcommon; 
 
 namespace NeuronServerRemoteControl
@@ -24,10 +25,47 @@ namespace NeuronServerRemoteControl
         /// <summary>
         /// Команды на выполнение
         /// </summary>
-        internal Queue<NSRCcommand> Commands { get;  set;  } = new Queue<NSRCcommand>(); 
+        private Queue<NSRCcommand> Commands { get;  set;  } = new Queue<NSRCcommand>();
+
+
+        /// <summary>
+        /// Отправленные команды
+        /// </summary>
+        public List<NSRCcommand> SentCommands { get; set; } = new List<NSRCcommand>();
+
+        /// <summary>
+        /// Добавить команду
+        /// </summary>
+        /// <param name="command"></param>
+        internal void AddCommand(NSRCcommand command)
+        {
+            Commands.Enqueue(command);
+        }
+
+        /// <summary>
+        /// Взять следующую команду из очереди
+        /// </summary>
+        /// <returns></returns>
+        public NSRCcommand GetCommand()
+        {
+            if (Commands.Count == 0) return null;
+            NSRCcommand cmd = Commands.Dequeue();
+            SentCommands.Add(cmd);
+            cmd.State = CommandState.Sent;
+
+            return cmd;
+        }
+       internal void AddResponse(NSRCresponse response)
+        {
+            NSRCcommand cmd = SentCommands.FirstOrDefault(i => i.Id == response.Id);
+            if (cmd != null)
+                cmd.SetResponse(response);
+        }
+
 
         public NSRCserver()
         {
         }
-    }
+
+     }
 }

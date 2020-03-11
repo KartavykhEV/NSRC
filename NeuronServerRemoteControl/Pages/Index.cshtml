@@ -1,10 +1,26 @@
 ﻿@page
+@using Newtonsoft.Json
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page"; 
+    ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @if (Model.connectedServers.Count() == 0)
+    {
+        <p>Подключенных серверов нет</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var i in Model.connectedServers)
+            {
+                Dictionary<string, string> serverData =
+                        new Dictionary<string, string> { { "passedObject", JsonConvert.SerializeObject(i.name) } };
+                <li><a asp-page="./Viewserver" asp-all-route-data="serverData">@i.name</a> @i.lastConnect.ToString("dd.MM.yyyy HH:mm") </li>
+            }
+        </ul>
+    }
+
 </div>
