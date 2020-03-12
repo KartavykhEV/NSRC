@@ -17,6 +17,16 @@ namespace NeuronServerRemoteControl.Pages
         private NSRCserver server => NSRCservice.servers.FirstOrDefault(i => i.name.Equals(ServerName, StringComparison.InvariantCultureIgnoreCase));
 
         /// <summary>
+        /// Кол-во отправленных команд
+        /// </summary>
+        public int SentCommandsCount => server.SentCommands.Count;
+
+        /// <summary>
+        /// Отправленные команды
+        /// </summary>
+        public IEnumerable<NSRCcommand> SentCommands => server.SentCommands.OrderByDescending(i => i.CreateDate);
+
+        /// <summary>
         /// Имя сервера
         /// </summary>
         public String ServerName { get; set; }
@@ -40,26 +50,21 @@ namespace NeuronServerRemoteControl.Pages
             ViewData["ServerName"] = ServerName;
         }
 
-     /*   public PartialViewResult GetListCommand()
+        public JsonResult OnGetListCommand(string passedObject)
         {
-            if(this.SentCommandsCount > 0)
+            ServerName = JsonConvert.DeserializeObject<String>(passedObject);
+            if (this.SentCommandsCount > 0)
             {
-            foreach (var item in this.SentCommands)
-            {
-                <p>@($"{item.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")} {item.CommandText}")</p>
-                <p>@item.ResponseText</p>
+                var res = JsonConvert.SerializeObject(this.SentCommands.ToList().ConvertAll(t => new
+                {
+                    CommandText = t.CommandText,
+                    CreateDate = t.CreateDate.ToString("dd.MM.yyyy HH:mm:ss"),
+                    ResponseText = t.ResponseText
+                }));
+                return new JsonResult(res);
             }
-
-            Cars = _carService.GetAll();
-            return Partial("_CarPartial", Cars);
-
-           /*return new PartialViewResult
-            {
-                ViewName = "_CarPartial",
-                ViewData = new ViewDataDictionary<List<Car>>(ViewData, Cars)
-            };
-        }*/
-
-        //public IActionResult OnGet
+            else
+                return new JsonResult(null);
+        }
     }
 }

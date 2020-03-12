@@ -5,10 +5,10 @@
 }
 
 <style>
-    .flexBottom {
+    .flexCenter {
         display: flex;
-        height: 100%;
-        align-items: flex-end;
+        align-items: center;
+        justify-content: flex-end;
     }
     .sendButton {
         width: 38px;
@@ -19,24 +19,71 @@
         .sendButton:focus {
             zoom: 0.9;
         }
+
+    .commandBlock {
+        margin-bottom: 10px;
+    }
+
+    .commandBlock .commandInfo {
+        border: 1px solid #bdbdbd;
+        border-radius: 30px;
+        padding: 20px;
+    }
+        .commandBlock .commandInfo p {
+            margin: 0px;
+        }
+
+
+    .isInvalid {
+        border-color: #dc3545;
+    }
+        .isInvalid:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+    }
 </style>
 
 <form class="form-horizontal" method="post" id="formSend">
     @Html.HiddenFor(m => m.ServerName)
     <div class="form-row">
-        <div class="form-group col-md-10 col-sm-9 col-8" style=" max-width: calc(100% - 50px);flex-basis: calc(100% - 50px);">
-            <label for="Name" style="font-weight: bold;">Текст команды</label>
-            <input type="text" class="form-control" name="CommandText" id="CommandText">
+        <label for="Name" style="font-weight: bold;" class="col-md-12">Текст команды</label>
+        <div class="form-group col-md-11 col-8" style=" ">
+            <input type="text" class="form-control" name="CommandText" id="CommandText" autocomplete="off">
         </div>
-        <div class="form-group">
-            <div class="flexBottom">
-                <img src="~/img/send.png" class="sendButton" onclick="sendCommand()" title="Отправить команду" />
-            </div>
+        <div class="form-group col-md-1 flexCenter">
+            <img src="~/img/send.png" class="sendButton" onclick="sendCommand()" title="Отправить команду" />
         </div>
     </div>
 
 </form>
-<div id="commandList"></div>
+<div id="commandList">
+    <h4 class="text-center">Предыдущие запросы</h4>
+
+    @if (Model.SentCommandsCount > 0)
+    {
+        @foreach (var item in Model.SentCommands)
+        {
+            <div class="row commandBlock">
+                <div class="col-md-11 commandInfo">
+                    <div class="row">
+                        <p class="col-md-6">@item.CommandText</p>
+                        <p class="col-md-6 text-right">@item.CreateDate.ToString("dd.MM.yyyy HH:mm:ss")</p>
+                        <p class="col-md-12">@item.ResponseText</p>
+                    </div>
+                </div>
+                <div class="col-md-1 flexCenter">
+                    <img src="/img/send.png" class="sendButton" onclick="sendCommand('@item.CommandText')" title="Отправить команду снова">
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Запросов нет</p>
+    }
+
+</div>
 
 
 <div class="LoadPanel hideLP">
@@ -48,10 +95,15 @@
 
     $(document).ready(function ()
     {
-        reloadCommands();
+       // reloadCommands();
         document.onkeypress = stopRKey;
+        $("#CommandText").on("input", function ()
+        {
+            $(this).removeClass("isInvalid");
+        });
     });
 
+    //Перегрузка Enter-a
     function stopRKey(evt)
     {
         var evt = (evt) ? evt : ((event) ? event : null);
@@ -59,14 +111,14 @@
         if ((evt.keyCode == 13) && (node.type == "text")) { sendCommand(); return false; }
     }
 
-
+    //Перезагрузить список команд
     function reloadCommands()
     {
         $(".LoadPanel").removeClass("hideLP").addClass("showLP");
         var jsonData = { "passedObject": '\"@serverName\"' };
         $.ajax({
             type: 'GET',
-            url: "/ListCommand?handler=ListCommand",
+            url: "/ViewServer?handler=ListCommand",
             contentType: 'application/json; charset=utf-8"',
             data: jsonData,
             success: function (result)
@@ -82,14 +134,36 @@
         });
     }
 
+    //Отправить команду
     function sendCommand(text)
     {
         if (text != null)
             $("#CommandText").val(text);
-        $.post('', $('#formSend').serialize())
-        $("#CommandText").val("");
 
-        setInterval(reloadCommands, 3000);
+        if (!isEmpty($("#CommandText").val()))
+        {
+            $(".LoadPanel").removeClass("hideLP").addClass("showLP");
+            $.ajax({
+                type: 'POST',
+                url: "",
+                data: $('#formSend').serialize(),
+                success: function (result)
+                {
+                    $("#CommandText").val("");
+                    $(".LoadPanel").removeClass("showLP").addClass("hideLP");
+                },
+                error: function (error)
+                {
+                    console.log(error);
+                    $(".LoadPanel").removeClass("showLP").addClass("hideLP");
+                }
+            });
+        } else
+        {
+            $("#CommandText").addClass("isInvalid");
+        }
+
+        //$.post('', $('#formSend').serialize())
     }
 
 </script>
