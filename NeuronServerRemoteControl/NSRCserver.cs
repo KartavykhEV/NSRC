@@ -5,6 +5,13 @@ using NSRcommon;
 
 namespace NeuronServerRemoteControl
 {
+    public enum ServerState
+    {
+        Active,
+        Waiting,
+        Disctonnected,
+    }
+
 
     /// <summary>
     /// Управляемый элемент
@@ -20,6 +27,9 @@ namespace NeuronServerRemoteControl
         /// Дата, время последнего подключения
         /// </summary>
         public DateTime lastConnect { get;  set;  }
+
+        public ServerState State => (DateTime.Now - lastConnect) < TimeSpan.FromSeconds(5) ? ServerState.Active :
+            ((DateTime.Now - lastConnect) < TimeSpan.FromSeconds(70) ? ServerState.Waiting : ServerState.Disctonnected);
 
 
         /// <summary>

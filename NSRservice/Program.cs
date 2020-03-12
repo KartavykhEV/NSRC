@@ -108,7 +108,7 @@ namespace NSRservice
         /// <returns></returns>
         static Boolean callConnect()
         {
-            BasicHttpsBinding basicHttpBinding = null;
+            BasicHttpBinding basicHttpBinding = null;
             EndpointAddress endpointAddress = null;
             ChannelFactory<INSRCservice> factory = null;
             INSRCservice serviceProxy = null;
@@ -117,9 +117,9 @@ namespace NSRservice
 
             try
             {
-                basicHttpBinding = new BasicHttpsBinding();
-                basicHttpBinding.Security.Mode = BasicHttpsSecurityMode.Transport;
-                endpointAddress = new EndpointAddress(new Uri($"https://{host}:{port}/nsrc_service.asmx"));
+                basicHttpBinding = new BasicHttpBinding();
+                basicHttpBinding.Security.Mode = BasicHttpSecurityMode.None;
+                endpointAddress = new EndpointAddress(new Uri($"http://{host}:{port}/nsrc_service.asmx"));
                 factory = new ChannelFactory<INSRCservice>(basicHttpBinding, endpointAddress);
                 serviceProxy = factory.CreateChannel();
 
@@ -131,7 +131,7 @@ namespace NSRservice
                     command = serviceProxy.SendResponse(serverName, response);
                     timeout = 2; // переключаем в режим частой проверки
                 }
-                WriteConsole("command null");
+                //WriteConsole("command null");
 
                 factory.Close();
                 ((ICommunicationObject)serviceProxy).Close();
