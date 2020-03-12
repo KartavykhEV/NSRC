@@ -33,12 +33,12 @@ namespace NeuronServerRemoteControl
                 options.CheckConsentNeeded = context => true; 
                 options.MinimumSameSitePolicy = SameSiteMode.None; 
             });
-            services.AddHttpsRedirection(options =>
+            /*services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
                 options.HttpsPort = Convert.ToInt32(Configuration["https_port"]);
                 
-            });
+            });*/
             services.AddSingleton(typeof(INSRCservice), new NSRCservice()); 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); 
@@ -58,12 +58,12 @@ namespace NeuronServerRemoteControl
                 app.UseHsts(); 
             }
 
-            app.UseHttpsRedirection(); 
+            //app.UseHttpsRedirection(); 
             app.UseStaticFiles(); 
             //app.UseCookiePolicy(); 
 
-            BasicHttpsBinding bind = new BasicHttpsBinding(); 
-            bind.Security.Mode = BasicHttpsSecurityMode.Transport;
+            BasicHttpBinding bind = new BasicHttpBinding(); 
+            bind.Security.Mode = BasicHttpSecurityMode.None;
             app.UseSoapEndpoint<INSRCservice>(path: "/nsrc_service.asmx", binding: bind);
 
             app.UseMvc(); 
