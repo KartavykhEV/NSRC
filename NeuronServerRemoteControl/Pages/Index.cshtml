@@ -11,6 +11,23 @@
     .bLeft {
         border-left: 1px solid #d1d1d2;
     }
+    .stateCircle {
+        width: 16px;
+        height: 16px;
+        border-radius: 50px;
+        float: left;
+        margin-top: 4px;
+    }
+        .stateCircle.Active {
+            background: #0fc50f;
+        }
+        .stateCircle.Waiting {
+            background: #fda401;
+        }
+        .stateCircle.Disctonnected {
+            background: #8c8c8c;
+        }
+
 </style>
 
 <div class="container" id="mainContent">
@@ -30,7 +47,10 @@
                 @foreach (var i in Model.connectedServers)
                 {
                     Dictionary<string, string> serverData = new Dictionary<string, string> { { "passedObject", JsonConvert.SerializeObject(i.name) } };
-                    <div class="offset-3 col-md-3 text-center"><a asp-page="./Viewserver" asp-all-route-data="serverData">@i.name</a></div>
+                    <div class="offset-3 col-md-3 text-center">
+                        <div class="stateCircle @i.State.ToString()"></div>
+                        <a asp-page="./Viewserver" asp-all-route-data="serverData">@i.name</a>
+                    </div>
                     <div class="col-md-3 text-center bLeft">@i.lastConnect.ToString("dd.MM.yyyy HH:mm")</div>
                 }
             </div>
@@ -44,7 +64,7 @@
     {
         GetServerList();
 
-        setInterval(GetServerList, 5000);
+        //setInterval(GetServerList, 5000);
     });
 
     function GetServerList()
@@ -71,7 +91,10 @@
                     for (let i = 0; i < arrayRes.length; i++)
                     {
                         let item = arrayRes[i];
-                        serversContent += "<div class='offset-3 col-md-3 text-center'><a href=\'/ViewServer?passedObject=\"" + item.name + "\"\''>" + item.name + "</a></div>" +
+                        serversContent += "<div class='offset-3 col-md-3 text-center'>" +
+                                "<div class='stateCircle " + item.State +"'></div>" + 
+                                "<a href=\'/ViewServer?passedObject=\"" + item.name + "\"\'> " + item.name + "</a>" +
+                            "</div> " +
                             "<div class='col-md-3 text-center bLeft'>" + item.lastConnect + "</div>";
                     }
 

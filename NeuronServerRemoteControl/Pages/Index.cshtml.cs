@@ -24,7 +24,11 @@ namespace NeuronServerRemoteControl.Pages
 
         public JsonResult OnGetListServers()
         {
-            var res = JsonConvert.SerializeObject(connectedServers.ToList().ConvertAll(t => new { name = t.name, lastConnect = t.lastConnect.ToString("dd.MM.yyyy HH:mm") } ));
+            var res = JsonConvert.SerializeObject(connectedServers.ToList().ConvertAll(t => new {
+                name = t.name,
+                lastConnect = t.lastConnect.ToString("dd.MM.yyyy HH:mm"),
+                State = t.State.ToString()
+            } ));
             return new JsonResult(res);
         }
     }
