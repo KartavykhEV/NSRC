@@ -129,7 +129,7 @@ namespace NSRservice
                     rv = true;
                     NSRCresponse response = executeCommand(command);
                     command = serviceProxy.SendResponse(serverName, response);
-                    timeout = 2; // переключаем в режим частой проверки
+                    timeout = small_timeout; // переключаем в режим частой проверки
                 }
                 //WriteConsole("command null");
 

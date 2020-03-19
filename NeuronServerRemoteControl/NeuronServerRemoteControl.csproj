@@ -27,4 +27,10 @@
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\Control\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Pages\Admin\Index.cshtml.cs" />
+  </ItemGroup>
 </Project>

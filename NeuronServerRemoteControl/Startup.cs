@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder; 
 using Microsoft.AspNetCore.Hosting; 
 using Microsoft.AspNetCore.Http; 
-using Microsoft.AspNetCore.HttpsPolicy; 
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc; 
 using Microsoft.Extensions.Configuration; 
-using Microsoft.Extensions.DependencyInjection; 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using NSRcommon; 
 using SoapCore; 
 
@@ -33,15 +35,21 @@ namespace NeuronServerRemoteControl
                 options.CheckConsentNeeded = context => true; 
                 options.MinimumSameSitePolicy = SameSiteMode.None; 
             });
+
             /*services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
                 options.HttpsPort = Convert.ToInt32(Configuration["https_port"]);
                 
             });*/
-            services.AddSingleton(typeof(INSRCservice), new NSRCservice()); 
+            services.AddSingleton(typeof(INSRCservice), new NSRCservice());
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2); 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(cookieOptions => {
+                cookieOptions.LoginPath = "/Login";
+            });
+            services.AddMvc().AddRazorPagesOptions(options => {
+                    options.Conventions.AuthorizeFolder("/control");
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,7 +73,7 @@ namespace NeuronServerRemoteControl
             BasicHttpBinding bind = new BasicHttpBinding(); 
             bind.Security.Mode = BasicHttpSecurityMode.None;
             app.UseSoapEndpoint<INSRCservice>(path: "/nsrc_service.asmx", binding: bind);
-
+            app.UseAuthentication();
             app.UseMvc(); 
         }
     }

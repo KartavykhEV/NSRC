@@ -23,10 +23,7 @@ namespace NeuronServerRemoteControl
 
         public NSRCcommand Connect(String name)
         {
-
-            Console.WriteLine($"Connected server '{name}'");
-
-
+            //Console.WriteLine($"Connected server '{name}'");
             NSRCserver server = servers.FirstOrDefault(i => i.name.Equals(name, StringComparison.InvariantCultureIgnoreCase)); 
             if (server == null) // нет такого
             {

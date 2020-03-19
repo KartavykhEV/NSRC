@@ -56,6 +56,7 @@ body {
 }
 
 
+
 /*Loader*/
 .LoadPanel,
 .LoadPanelInside {
@@ -127,5 +128,78 @@ body {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+
+/*Настройка меню*/
+.userBlock {
+    display: inline-flex;
+}
+
+    .userBlock .linkUser,
+    .userBlockMob .linkUser {
+        color: black;
+    }
+
+        .userBlock .linkUser::before,
+        .userBlockMob .linkUser::before {
+            content: ' ';
+            background: url(/img/account.svg) no-repeat;
+            width: 25px;
+            height: 25px;
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .userBlock .linkUser:hover,
+        .userBlock .linkUser:active,
+        .userBlock .linkUser:focus,
+        .userBlockMob .linkUser:hover,
+        .userBlockMob .linkUser:active,
+        .userBlockMob .linkUser:focus {
+            text-decoration: underline
+        }
+
+    .userBlock .dropdown {
+        margin-right: 50px;
+    }
+
+        .userBlock .dropdown ul.dropdown-menu {
+            width: auto;
+            min-width: 8rem;
+            left: -10px;
+            padding: 3px 0px;
+        }
+
+            .userBlock .dropdown ul.dropdown-menu > li > a {
+                color: black;
+                padding: 10px;
+                display: block;
+            }
+
+                .userBlock .dropdown ul.dropdown-menu > li > a:hover,
+                .userBlock .dropdown ul.dropdown-menu > li > a:active,
+                .userBlock .dropdown ul.dropdown-menu > li > a:focus {
+                    background: #e6e6e6;
+                    text-decoration: none;
+                }
+
+.userBlockMob {
+    display: none;
+}
+
+@media (max-width: 575px) {
+    .userBlockMob {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 80px;
+    }
+
+    .userBlock {
+        display: none;
     }
 }

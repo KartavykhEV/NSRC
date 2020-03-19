@@ -32,6 +32,22 @@ namespace NeuronServerRemoteControl.Pages
         /// </summary>
         public String ServerName { get; set; }
 
+        /// <summary>
+        /// Вывод в консоль
+        /// </summary>
+        public String ConsoleText {
+            get {
+                List<string> output = new List<string>();
+                foreach (NSRCcommand command in SentCommands.OrderBy(i=>i.CreateDate))
+                {
+                    output.Add($"console\\> {command.CommandText}");
+                    if (command.State == CommandState.Success)
+                        output.Add(command.ResponseText);
+                }
+                return String.Join("\n", output);
+            }
+        }
+
         public IActionResult OnGet(string passedObject)
         {
             ServerName = JsonConvert.DeserializeObject<String>(passedObject);
@@ -83,6 +99,13 @@ namespace NeuronServerRemoteControl.Pages
                 }
             }
         }
+
+        public JsonResult OnGetConsole(string passedObject)
+        {
+            ServerName = JsonConvert.DeserializeObject<String>(passedObject);
+            return new JsonResult(JsonConvert.SerializeObject(this.ConsoleText));
+        }
+
 
         public JsonResult OnGetListCommand(string passedObject)
         {

@@ -5,6 +5,14 @@
 }
 
 <style>
+
+
+
+    textarea {
+        font-family: Courier New, Courier, monospace;
+        font-size: 14px;
+    }
+
     .flexCenter {
         display: flex;
         align-items: center;
@@ -48,6 +56,12 @@
     }
 </style>
 
+<h2>Подключение к "@serverName"</h2>
+<div class="form-group col-md-11 col-8" style=" ">
+    <textarea name="console" id="console" width="100%"
+            rows="20" cols="120" readonly="true">@Model.ConsoleText</textarea>
+</div>
+
 <form class="form-horizontal" method="post" id="formSend">
     @Html.HiddenFor(m => m.ServerName)
     <div class="form-row">
@@ -61,7 +75,7 @@
     </div>
 
 </form>
-<h4 class="text-center">Предыдущие запросы</h4>
+<!--<h4 class="text-center">Предыдущие запросы</h4>
 <div id="commandList">
 
     @if (Model.SentCommandsCount > 0)
@@ -87,7 +101,7 @@
         <p id="notRequest">Запросов нет</p>
     }
 
-</div>
+</div> -->
 
 
 <div class="LoadPanel hideLP">
@@ -99,12 +113,14 @@
 
     $(document).ready(function ()
     {
-       // reloadCommands();
         document.onkeypress = stopRKey;
         $("#CommandText").on("input", function ()
         {
             $(this).removeClass("isInvalid");
         });
+        var psconsole = $('#console');
+        if (psconsole.length)
+            psconsole.scrollTop(psconsole[0].scrollHeight - psconsole.height());
     });
 
     //Перегрузка Enter-a
@@ -113,29 +129,6 @@
         var evt = (evt) ? evt : ((event) ? event : null);
         var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
         if ((evt.keyCode == 13) && (node.type == "text")) { sendCommand(); return false; }
-    }
-
-    //Перезагрузить список команд
-    function reloadCommands()
-    {
-        $(".LoadPanel").removeClass("hideLP").addClass("showLP");
-        var jsonData = { "passedObject": '\"@serverName\"' };
-        $.ajax({
-            type: 'GET',
-            url: "/ViewServer?handler=ListCommand",
-            contentType: 'application/json; charset=utf-8"',
-            data: jsonData,
-            success: function (result)
-            {
-                $("#commandList").html(result);
-                $(".LoadPanel").removeClass("showLP").addClass("hideLP");
-            },
-            error: function (error)
-            {
-                console.log(error);
-                $(".LoadPanel").removeClass("showLP").addClass("hideLP");
-            }
-        });
     }
 
     //Отправить команду
@@ -172,8 +165,29 @@
 
                     $("#notRequest").remove();
                     $("#commandList").prepend(blockCommand);
-
                     $(".LoadPanel").removeClass("showLP").addClass("hideLP");
+
+                    $.ajax({
+                        type: 'GET',
+                        url: "/ViewServer?handler=Console",
+                        contentType: 'application/json; charset=utf-8"',
+                        data: { "passedObject": '\"@serverName\"' },
+                        success: function (result) {
+                            //alert(result.Trim('"'));
+                            var cons = JSON.parse(result);
+                            $("#console").html(cons);
+
+                            var psconsole = $('#console');
+                            if (psconsole.length)
+                                psconsole.scrollTop(psconsole[0].scrollHeight - psconsole.height());
+
+                        },
+                        error: function (error) {
+                              //  alert(error);
+                                console.log(error);
+                        }
+                    });
+
                 },
                 error: function (error)
                 {
@@ -181,6 +195,9 @@
                     $(".LoadPanel").removeClass("showLP").addClass("hideLP");
                 }
             });
+
+
+
         } else
             $("#CommandText").addClass("isInvalid");
 

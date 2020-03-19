@@ -28,7 +28,7 @@ namespace NeuronServerRemoteControl
         /// </summary>
         public DateTime lastConnect { get;  set;  }
 
-        public ServerState State => (DateTime.Now - lastConnect) < TimeSpan.FromSeconds(5) ? ServerState.Active :
+        public ServerState State => (DateTime.Now - lastConnect) < TimeSpan.FromSeconds(3) ? ServerState.Active :
             ((DateTime.Now - lastConnect) < TimeSpan.FromSeconds(70) ? ServerState.Waiting : ServerState.Disctonnected);
 
 
